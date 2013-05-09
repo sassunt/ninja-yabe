@@ -1,0 +1,58 @@
+<#macro display _post _as>
+
+<#-- Display a post in one of these modes: 'full', 'home' or 'teaser' -->
+
+<div class="post ${(_as == 'teaser')?string('teaser', '')}">
+    <h2 class="post-title">
+        <a href="#">${_post.title}</a>
+    </h2>
+    <div class="post-metadata">
+        <span class="post-author">by ${_post.author.fullname}</span>,
+        <span class="post-date">${_post.postedAt?string('dd MMM yy')}</span>
+        <#if _as != 'full'>
+            <span class="post-comments">
+                &nbsp;|&nbsp; ${(_post.comments?size > 0)?string(_post.comments?size, "no")}
+                ${(_post.comments?size > 1)?string("comments", "comment")}
+                <#if _post.comments?has_content>
+                    , latest by ${_post.comments?first.author}
+                </#if>
+            </span>
+        </#if>
+    </div>
+    <#if _as != 'teaser'>
+        <div class="post-content">
+            <div class="about">Detail: </div>
+              <#if _post.content??>
+                <#noescape>${_post.content?replace("\n", "<br/>")}</#noescape>
+              </#if>
+        </div>
+    </#if>
+</div>
+
+<#if _as == 'full'>
+    <div class="comments">
+        <h3>
+            ${(_post.comments?size > 0)?string(_post.comments?size, "no")}
+            ${(_post.comments?size > 1)?string("comments", "comment")}
+        </h3>
+
+        <#list _post.comments as comment>
+            <div class="comment">
+                <div class="comment-metadata">
+                    <span class="comment-author">by ${comment.author},</span>
+                    <span class="comment-date">
+                        ${comment.postedAt?string('dd MMM yy')}
+                    </span>
+                </div>
+                <div class="comment-content">
+                    <div class="about">Detail: </div>
+                    <#if _post.content??>
+                      <#noescape>${comment.content?replace("\n", "<br/>")}</#noescape>
+                    </#if>
+                </div>
+            </div>
+        </#list>
+
+    </div>
+</#if>
+</#macro>

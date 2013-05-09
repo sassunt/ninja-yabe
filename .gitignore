@@ -1,0 +1,20 @@
+# target dir
+target/
+
+# OS Specific
+.DS_Store
+
+# IDE Specific
+.classpath
+.project
+.settings/
+.externalToolBuilders
+.idea/
+*.iml
+
+# Log file
+*.log
+
+# DB file
+/*.db
+/*.sql
