@@ -63,6 +63,14 @@ public class Post {
 				.findList();
 
 	}
+	
+	public static Post findById(long id) {
+		return Ebean.find(Post.class)
+				.fetch("author")
+				.where()
+				.eq("id", id)
+				.findUnique();
+	}
 
 	public String getContent() {
 		return new String(this.content, ENCODING);

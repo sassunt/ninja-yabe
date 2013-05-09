@@ -48,6 +48,9 @@ public class Routes implements ApplicationRoutes {
 	public void init(Router router) {
 
 		router.GET().route("/").with(ApplicationController.class, "index");
+		
+		router.GET().route("/show/{id}").with(ApplicationController.class, "show");
+
 
 		router.GET().route("/assets/.*").with(AssetsController.class, "serve");
 	}

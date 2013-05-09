@@ -16,22 +16,24 @@
 
 package controllers;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 import models.Post;
 import ninja.Context;
 import ninja.Result;
 import ninja.Results;
 import ninja.i18n.Lang;
+import ninja.params.PathParam;
 
 import org.slf4j.Logger;
 
+import com.google.common.collect.Maps;
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
 
-@Singleton
+//@Singleton TODO HttpServletRequestのInjectができなくなるため
 public class ApplicationController {
 
 	@Inject
@@ -40,18 +42,34 @@ public class ApplicationController {
 	@Inject
 	Lang lang;
 
+	@Inject
+	HttpServletRequest request;
+
 	public Result index(Context context) {
 
 		List<Post> posts = Post.findRecent(11);
 
 		Post frontPost = posts.isEmpty() ? null : posts.remove(0);
 
-		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> map = newHashMap();
 		map.put("frontPost", frontPost);
 		map.put("olderPosts", posts);
 
 		return Results.html().render(map);
 
+	}
+
+	public Result show(@PathParam("id") Long id, Context context) {
+		Map<String, Object> map = newHashMap();
+		map.put("post", Post.findById(id));
+
+		return Results.html().render(map);
+	}
+
+	private Map<String, Object> newHashMap() {
+		Map<String, Object> map = Maps.newHashMap();
+		map.put("contextPath", "".equals(request.getContextPath()) ? "/" : request.getContextPath());
+		return map;
 	}
 
 }
