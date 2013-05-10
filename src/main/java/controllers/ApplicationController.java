@@ -61,7 +61,11 @@ public class ApplicationController {
 
 	public Result show(@PathParam("id") Long id, Context context) {
 		Map<String, Object> map = newHashMap();
-		map.put("post", Post.findById(id));
+		Post post = Post.findById(id);
+		map.put("post", post);
+
+		map.put("previous", post.previous());
+		map.put("next", post.next());
 
 		return Results.html().render(map);
 	}

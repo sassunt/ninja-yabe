@@ -1,6 +1,18 @@
 <#import "../layout/defaultLayout.ftl.html" as layout />
 <@layout.myLayout "Home page">
 
+<ul id="pagination">
+    <#if previous??>
+        <li id="previous">
+            <a href="${contextPath}show/${previous.id}">${previous.title}</a>
+        </li>
+    </#if>
+    <#if next??>
+        <li id="next">
+            <a href="${contextPath}show/${next.id}">${next.title}</a>
+        </li>
+    </#if>
+</ul>
 <#import "../layout/display.ftl.html" as display />
 <@display.display post "full" />
 

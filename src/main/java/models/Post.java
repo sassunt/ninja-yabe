@@ -54,6 +54,26 @@ public class Post {
 		Ebean.save(this);
 		return this;
 	}
+	
+	public Post previous() {
+		return Ebean.find(Post.class)
+				.fetch("author")
+				.where()
+				.lt("postedAt", this.postedAt)
+				.orderBy("postedAt desc")
+				.setMaxRows(1)
+				.findUnique();
+	}
+	
+	public Post next() {
+		return Ebean.find(Post.class)
+				.fetch("author")
+				.where()
+				.gt("postedAt", this.postedAt)
+				.orderBy("postedAt asc")
+				.setMaxRows(1)
+				.findUnique();
+	}
 
 	public static List<Post> findRecent(int maxrows) {
 		return Ebean.find(Post.class)
