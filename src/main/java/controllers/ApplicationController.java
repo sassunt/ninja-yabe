@@ -26,7 +26,11 @@ import ninja.Context;
 import ninja.Result;
 import ninja.Results;
 import ninja.i18n.Lang;
+import ninja.params.Param;
 import ninja.params.PathParam;
+import ninja.validation.Length;
+import ninja.validation.Required;
+import ninja.validation.Validation;
 
 import org.slf4j.Logger;
 
@@ -60,14 +64,41 @@ public class ApplicationController {
 	}
 
 	public Result show(@PathParam("id") Long id, Context context) {
+		return Results.html().render(getPostMap(id));
+	}
+	
+	public Result postComment(Validation validation,
+			@PathParam("postId") Long postId,
+			@Param("author") @Required @Length(min = 1) String author,
+			@Param("content") @Required @Length(min = 1) String content,
+			Context context) {
+		
+		Map<String, Object> map = getPostMap(postId);
+		
+		if (validation.hasViolations()) {
+			map.put("ifErrors", true);
+			map.put("author", author);
+			map.put("content", content);
+		} else {
+			Post post = Post.findById(postId);
+			post.addComment(author, content);
+			
+			context.getFlashCookie().success("Thanks for posting %s", author);
+			map.putAll(context.getFlashCookie().getCurrentFlashCookieData());
+		}
+
+		return Results.html().template("/views/ApplicationController/show.ftl.html").render(map);
+	}
+	
+	private Map<String, Object> getPostMap(Long id) {
 		Map<String, Object> map = newHashMap();
 		Post post = Post.findById(id);
 		map.put("post", post);
 
 		map.put("previous", post.previous());
 		map.put("next", post.next());
-
-		return Results.html().render(map);
+		
+		return map;
 	}
 
 	private Map<String, Object> newHashMap() {

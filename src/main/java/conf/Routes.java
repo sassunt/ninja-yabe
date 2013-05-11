@@ -50,7 +50,7 @@ public class Routes implements ApplicationRoutes {
 		router.GET().route("/").with(ApplicationController.class, "index");
 		
 		router.GET().route("/show/{id}").with(ApplicationController.class, "show");
-
+		router.POST().route("/posts/{postId}/comments").with(ApplicationController.class, "postComment");
 
 		router.GET().route("/assets/.*").with(AssetsController.class, "serve");
 	}
